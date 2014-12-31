@@ -14,7 +14,7 @@ class Components::Local
     
     value ||= @options[:default] 
     
-    value.html_safe
+    value.to_s.html_safe
   end
   
   def self.factory(hash)

@@ -12,12 +12,12 @@ class Components::Local
 
     text.sub!(@local_regexp, '')
     
-    value ||= @options[:default] 
+    value = value.blank? ? @options[:default] : value
     
     value.to_s.html_safe
   end
   
   def self.factory(hash)
-    Components::Local.new(hash.fetch(:name), hash.fetch(:options, {}))
+    Components::Local.new(hash.fetch(:name), hash)
   end
 end

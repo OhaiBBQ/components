@@ -12,7 +12,9 @@ class Components::Local
 
     text.sub!(@local_regexp, '')
     
-    value.nil? ? @options[:default] : value
+    value ||= @options[:default] 
+    
+    value.html_safe
   end
   
   def self.factory(hash)

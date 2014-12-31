@@ -10,7 +10,7 @@ class Components::Component
 
   def process(text, &block)
     @matcher.process(text) do |match|
-      block.call(build_locals(match).merge({ content: match }))
+      block.call(build_locals(match).merge({ content: match.html_safe }))
     end
   end
   

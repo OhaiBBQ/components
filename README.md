@@ -6,7 +6,8 @@ Small library for inlining rails partials in to bodies of text
 ##### app/views/shared/_media.html.erb
 ```erb
 <div class="media-image">
-  <img src="<%= media_image %>">
+  <%= image_tag media_image %>
+  <%= dynamic_context %>
   <%= content %>
 </div>
 ```
@@ -14,9 +15,10 @@ Small library for inlining rails partials in to bodies of text
 ### Register the component
 #### components.rb
 ```ruby
-Components.register(:media) do
-  accepts_local :media_image
-end
+Components.register([{
+  name: :media,
+  locals: [:media_image]
+}])
 ```
 
 ### Render the component
@@ -29,12 +31,13 @@ body = <<-BODY
 {{/media}}
 BODY
 
-Components::Renderer.new.render_html(body)
+Components::Context.new(assigns: { dynamic_context: 'foo' }).render_html(body)
 ```
 #### display_media.rb outputs:
 ```html
 <div class="media-image">
   <img src="foo.jpg">
+  foo
   OMG
 </div>
 ```

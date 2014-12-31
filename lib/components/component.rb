@@ -1,46 +1,36 @@
 class Components::Component
-  class << self
-    def component_locals
-      @component_locals ||= {}
-    end
+  attr_reader :name, :locals, :template
 
-    def accepts_local(name, options = {})
-      component_locals[name] = Components::Local.new(name, options)
-    end
+  def initialize(name, options = {})
+    @name = name
+    @template = "shared/#{name}"
+    @locals = options.fetch(:locals)
+    @matcher = Components::Matcher.new(name)
+  end
 
-    def component_name(name)
-      @name = name
-    end
-    
-    def name
-      @name
+  def process(text, &block)
+    @matcher.process(text) do |match|
+      block.call(build_locals(match).merge({ content: match }))
     end
   end
   
-  def initialize(options = {})
-    @options = options
+  private
+  
+  def build_locals(match)
+    locals.inject({}) do |memo, local|
+      memo[local.name] = local.extract_match(match)
+      
+      memo
+    end
   end
 
-  def process(text)
-    Components::Processor.new(name, template, component_locals).process(text, assigns)
-  end
+  def self.factory(attributes)
+    locals = attributes.fetch(:locals, [])
 
-  protected
-
-  def template
-    "shared/#{name}"
-  end
-  
-  def name
-    self.class.name
-  end
-  
-  def component_locals
-    self.class.component_locals
-  end
-  
-  def assigns
-    @options
+    new(
+      attributes.fetch(:name),
+      locals: locals.map { |local| Components::Local.factory(local) } 
+    )
   end
 end
 

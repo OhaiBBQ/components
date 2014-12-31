@@ -11,9 +11,10 @@ Gem::Specification.new do |s|
   s.files       = %w(
     lib/components.rb 
     lib/components/component.rb 
+    lib/components/context.rb 
     lib/components/local.rb
-    lib/components/processor.rb 
-    lib/components/renderer.rb
+    lib/components/matcher.rb
+    lib/components/view.rb
   )
   
   s.add_runtime_dependency 'rails', '>= 4'

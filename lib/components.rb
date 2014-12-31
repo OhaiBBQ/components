@@ -1,18 +1,19 @@
 module Components
-  def self.register(name, &block)
-    component = Class.new(Components::Component)
-    component.class_eval { component_name name }
-    component.class_eval &block if block_given?
+  autoload :Context, 'components/context.rb'
+  autoload :Component, 'components/component.rb'
+  autoload :Local, 'components/local.rb'
+  autoload :Matcher, 'components/matcher.rb'
+  autoload :View, 'components/view.rb'
 
-    self.registered_components << component
+  def self.register(components)
+    components = Array(components)
+    
+    components.each do |component|
+      self.registered_components[component[:name]] = component
+    end
   end
 
   def self.registered_components
-    @registered_components ||= []
+    @registered_components ||= {}
   end
 end
-
-require_relative './components/component'
-require_relative './components/local'
-require_relative './components/processor'
-require_relative './components/renderer'

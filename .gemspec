@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
     lib/components/component.rb 
     lib/components/context.rb 
     lib/components/local.rb
-    lib/components/matcher.rb
+    lib/components/patterns.rb
     lib/components/view.rb
   )
   

@@ -1,20 +1,40 @@
 class Components::Local
+  LOCAL_NAME_REGEXP = /.+/
+  QOUTED_CONTENT_REGEXP = /"(?<local_value>[\s\S]+?)"/
+  INLINE_REGEXP = /(?<locals> (#{LOCAL_NAME_REGEXP}=#{QOUTED_CONTENT_REGEXP})?)/
+  
   attr_reader :name
   
   def initialize(name, options={})
     @name = name
-    @local_regexp = /\{\{#{name} (.+?)}}/
+    @local_regexp = /\{\{#{name} (?<local_value>.+)}}/
     @options = options
   end
+  
+  def extract_from(instance)
+    local = extract_local(instance.body, @local_regexp)
 
-  def extract_match(text)
-    value = Array(text.match(@local_regexp))[1]
+    local.blank? ? extract_local(instance.inline_locals, inline_local_regexp) : local
+  end
 
-    text.sub!(@local_regexp, '')
+  private
+  
+  def extract_local(text, regexp)
+    match = text.match(regexp)
     
-    value = value.blank? ? @options[:default] : value
-    
+    text.sub!(regexp, '')
+
+    default(match) { match['local_value'] }
+  end
+  
+  def default(value, &presence_block)
+    value = value.blank? ? @options[:default] : presence_block.call
+
     value.to_s.html_safe
+  end
+  
+  def inline_local_regexp
+    /#{name}=#{QOUTED_CONTENT_REGEXP}\s{0,1}/
   end
   
   def self.factory(hash)

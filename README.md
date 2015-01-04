@@ -1,4 +1,4 @@
-Small library for inlining rails partials in to bodies of text 
+Small library for rendering rails partials in to bodies of text 
 
 # Usage
 
@@ -6,7 +6,7 @@ Small library for inlining rails partials in to bodies of text
 ##### app/views/shared/_media.html.erb
 ```erb
 <div class="media-image">
-  <%= image_tag media_image %>
+  <%= image_tag media_image, data: { align: media_align } %>
   <%= dynamic_context %>
   <%= content %>
 </div>
@@ -17,7 +17,10 @@ Small library for inlining rails partials in to bodies of text
 ```ruby
 Components.register([{
   name: :media,
-  locals: [:media_image]
+  locals: [
+    {name: :media_image},
+    {name: :media_align, default: 'right'}
+  ]
 }])
 ```
 
@@ -25,8 +28,7 @@ Components.register([{
 #### display_media.rb
 ```ruby
 body = <<-BODY
-{{#media}}
-  {{media_image foo.jpg}}
+{{#media media_image="foo.jpg"}}
   OMG
 {{/media}}
 BODY
@@ -36,7 +38,7 @@ Components::Context.new(assigns: { dynamic_context: 'foo' }).render_html(body)
 #### display_media.rb outputs:
 ```html
 <div class="media-image">
-  <img src="foo.jpg">
+  <img src="foo.jpg" data-align="right">
   foo
   OMG
 </div>

@@ -3,6 +3,7 @@ module Components
   autoload :Component, 'components/component.rb'
   autoload :Local, 'components/local.rb'
   autoload :Matcher, 'components/matcher.rb'
+  autoload :Patterns, 'components/patterns.rb'
   autoload :View, 'components/view.rb'
 
   def self.register(components)

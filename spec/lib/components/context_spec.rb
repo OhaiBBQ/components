@@ -1,4 +1,4 @@
-require_relative '../../../lib/components'
+require_relative '../../helpers/spec_helper'
 
 describe Components::Context do
   describe '#render_html' do
@@ -13,31 +13,24 @@ describe Components::Context do
 
     let(:template) {
       <<-EOF
-          {{#media}}
+          {{#media foo="bar"}}
             {{media_image foobar}}
             wow
           {{/media}}
       EOF
     }
 
-    class MockView
-      def render(template, locals)
-        <<-EOF
-        #{locals[:content]}
-        #{locals[:media_image]}
-        EOF
-      end
-    end
 
     it 'works' do
       Components.register(registered_components)
       
-      context = Components::Context.new(view: MockView.new)
+      mock_view = MockView.new
+      context = Components::Context.new(view: mock_view)
 
-      compiled = context.render_html(template)
-
-      expect(compiled).to include("wow")
-      expect(compiled).to include("foobar")
+      context.render_html(template)
+      
+      expect(mock_view.last_render_call[:locals][:media_image]).to eq("foobar")
+      expect(mock_view.last_render_call[:locals][:content]).to include("wow")
     end
   end
 end 

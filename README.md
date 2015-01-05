@@ -37,7 +37,7 @@ Instances of component start and end tags will be rendered in to their respectiv
 
 ```ruby
 body = <<-BODY
-{{#post_header}} {{/post_header}}
+{{#post_header /}}
 {{#media media_image="foo.jpg"}}
   OMG
 {{/media}}

@@ -25,4 +25,14 @@ describe Components::Component do
       expect(mock_view.last_render_call[:locals][:name]).to eq('foo')
     end
   end
+  
+  context 'self closing components' do
+    let(:component_text) { "{{#section name=\"foo\" type=\"bar\" /}}" }
+    
+    it 'works' do
+      subject
+      
+      expect(mock_view.last_render_call[:locals][:name]).to eq('foo')
+    end
+  end
 end

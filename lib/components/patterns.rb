@@ -4,15 +4,22 @@ class Components::Patterns
     @name = name
   end
   
-  def find_instances(text, &block)
-    while match = component_regexp.match(text)
-      text.sub!(component_regexp, '')
-
-      block.call Instance.new(match['component_body'].html_safe, match['locals'])
-   end
+  def find_instances(text, &block) 
+    process_occurrences(text, component_regexp, &block)
+    process_occurrences(text, component_self_close_regexp, &block)
   end
   
   private
+  def process_occurrences(text, pattern, &block)
+    while match = pattern.match(text)
+      text.sub!(pattern, '')
+
+      body = match.names.include?('component_body') ? match['component_body'] : ''
+      
+      block.call Instance.new(body.html_safe, match['locals'])
+    end
+  end
+  
   def component_start
     /{{##{@name}#{Components::Local::INLINE_REGEXP}}}/
   end
@@ -27,5 +34,9 @@ class Components::Patterns
 
   def component_regexp
     /#{component_start}#{component_body}#{component_end}/
+  end
+   
+  def component_self_close_regexp
+    /{{##{@name}#{Components::Local::INLINE_REGEXP}[ ]{0,1}\/}}/
   end
 end

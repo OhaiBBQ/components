@@ -11,5 +11,7 @@ class MockView
   
   def render(template, locals)
     render_calls.push({ template: template, locals: locals})
+    
+    "#{template} (call number #{render_calls.size})"
   end
 end

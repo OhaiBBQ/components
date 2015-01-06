@@ -11,8 +11,9 @@ describe Components::Component do
   let(:component_text) { "{{#section name=\"foo\"}} my section {{/section}}"}
 
   it 'parses the body' do
-    subject
-    
+    content = subject
+
+    expect(content).to include('shared/section (call number 1)')
     expect(mock_view.last_render_call[:locals][:content]).to include('my section')
   end
 
@@ -27,12 +28,12 @@ describe Components::Component do
   end
   
   context 'self closing components' do
-    let(:component_text) { "{{#section name=\"foo\" type=\"bar\" /}}" }
+    let(:component_text) { "{{#section /}}"}
     
     it 'works' do
       subject
       
-      expect(mock_view.last_render_call[:locals][:name]).to eq('foo')
+      expect(mock_view.render_calls.size).to eq(1)
     end
   end
 end

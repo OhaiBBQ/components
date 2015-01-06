@@ -12,12 +12,13 @@ class Components::Patterns
   private
   def process_occurrences(text, pattern, &block)
     while match = pattern.match(text)
-      text.sub!(pattern, '')
-
       body = match.names.include?('component_body') ? match['component_body'] : ''
-      
-      block.call Instance.new(body.html_safe, match['locals'])
+
+      text.sub!(pattern,
+                block.call(Instance.new(body.html_safe, match['locals'])))
     end
+    
+    text
   end
   
   def component_start

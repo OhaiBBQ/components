@@ -1,7 +1,7 @@
 class Components::Local
   LOCAL_NAME_REGEXP = /.+/
-  QOUTED_CONTENT_REGEXP = /"(?<local_value>[\s\S]+?)"/
-  INLINE_REGEXP = /(?<locals> (#{LOCAL_NAME_REGEXP}=#{QOUTED_CONTENT_REGEXP})?)/
+  QUOTED_CONTENT_REGEXP = /"(?<local_value>[\s\S]+?)"/
+  INLINE_REGEXP = /(?<locals> (#{LOCAL_NAME_REGEXP}=#{QUOTED_CONTENT_REGEXP})?)?/
   
   attr_reader :name
   
@@ -34,7 +34,7 @@ class Components::Local
   end
   
   def inline_local_regexp
-    /#{name}=#{QOUTED_CONTENT_REGEXP}\s{0,1}/
+    /#{name}=#{QUOTED_CONTENT_REGEXP}\s{0,1}/
   end
   
   def self.factory(hash)

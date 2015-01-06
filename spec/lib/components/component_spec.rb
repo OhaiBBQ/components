@@ -8,7 +8,7 @@ describe Components::Component do
 
   subject { component.render_instances(component_text) }
 
-  let(:component_text) { "{{#section name=\"foo\"}} my section {{/section}}"}
+  let(:component_text) { "{{#section}} my section {{/section}}"}
 
   it 'parses the body' do
     content = subject
